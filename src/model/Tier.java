@@ -30,6 +30,14 @@ public class Tier {
 		this.id = id;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSortOrder(int sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
 	public Board getBoard() {
 		return board;
 	}
