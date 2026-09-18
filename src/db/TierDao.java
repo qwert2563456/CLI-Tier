@@ -58,7 +58,7 @@ public class TierDao {
 
 				return new Tier(board, tierId, sortOrder, name);
 			} else {
-				System.out.println("該当のIDのBoardがdbに登録されていません。");
+				System.out.println("指定したBoardに該当するTierが登録されていません。");
 				return null;
 			}
 
@@ -75,9 +75,7 @@ public class TierDao {
 		try (Connection connection = DatabaseManager.getConnection()) {
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-			int id = board.getId();
-
-			preparedStatement.setInt(1, id);
+			preparedStatement.setInt(1, board.getId());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -93,6 +91,50 @@ public class TierDao {
 			e.printStackTrace();
 			return tiers;
 		}
+	}
+
+	public void update(Tier tier) {
+		String sql = "UPDATE tiers SET name = ? , sort_order = ? WHERE id = ? AND board_id = ?";
+
+		try (Connection connection = DatabaseManager.getConnection()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+			preparedStatement.setString(1, tier.getName());
+			preparedStatement.setInt(2, tier.getSortOrder());
+			preparedStatement.setInt(3, tier.getId());
+			preparedStatement.setInt(4, tier.getBoard().getId());
+
+			int upInt = preparedStatement.executeUpdate();
+
+			if (upInt == 0) {
+				throw new IllegalArgumentException("該当するtierがありません。");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void delete(Tier tier) {
+		String sql = "DELETE FROM tiers WHERE id = ? AND board_id = ?";
+
+		try (Connection connection = DatabaseManager.getConnection()) {
+
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+			preparedStatement.setInt(1, tier.getId());
+			preparedStatement.setInt(2, tier.getBoard().getId());
+
+			int delInt = preparedStatement.executeUpdate();
+
+			if (delInt == 0) {
+				throw new IllegalArgumentException("該当するtierがありません");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }
