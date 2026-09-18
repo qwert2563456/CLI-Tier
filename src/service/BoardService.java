@@ -42,7 +42,24 @@ public class BoardService {
 	}
 
 	public void deleteBoard(BoardData boardData) {
+
 		BoardDao boardDao = new BoardDao();
+		ItemService itemService = new ItemService();
+		TierService tierService = new TierService();
+
+		for (Item item : boardData.getItems()) {
+			if (item.getBoard() == boardData.getBoard()) {
+				itemService.deleteItem(boardData, item);
+			}
+		}
+
+		for (Tier tier : boardData.getTiers()) {
+			if (tier.getBoard() == boardData.getBoard()) {
+				tierService.deleteTier(boardData, tier);
+			}
+
+		}
+
 		boardDao.delete(boardData.getBoard());
 	}
 
